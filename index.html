@@ -4,64 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CodeCraft - Interactive Coding Education Platform</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/monaco-editor@0.50.0/min/vs/loader.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         :root {
-            --background: hsl(0, 0%, 100%);
-            --foreground: hsl(20, 14.3%, 4.1%);
-            --muted: hsl(60, 4.8%, 95.9%);
-            --muted-foreground: hsl(25, 5.3%, 44.7%);
-            --card: hsl(0, 0%, 100%);
-            --card-foreground: hsl(20, 14.3%, 4.1%);
-            --border: hsl(20, 5.9%, 90%);
-            --primary: hsl(207, 90%, 54%);
-            --primary-foreground: hsl(211, 100%, 99%);
-            --secondary: hsl(60, 4.8%, 95.9%);
-            --secondary-foreground: hsl(24, 9.8%, 10%);
-            --accent: hsl(60, 4.8%, 95.9%);
-            --accent-foreground: hsl(24, 9.8%, 10%);
-            --destructive: hsl(0, 84.2%, 60.2%);
-            --destructive-foreground: hsl(60, 9.1%, 97.8%);
-            --ring: hsl(20, 14.3%, 4.1%);
+            --background: #ffffff;
+            --foreground: #1a1a1a;
+            --muted: #f5f5f5;
+            --muted-foreground: #666666;
+            --card: #ffffff;
+            --card-foreground: #1a1a1a;
+            --border: #e0e0e0;
+            --primary: #3b82f6;
+            --primary-foreground: #ffffff;
+            --secondary: #f1f5f9;
+            --secondary-foreground: #1e293b;
+            --accent: #f1f5f9;
+            --accent-foreground: #1e293b;
+            --destructive: #ef4444;
+            --destructive-foreground: #ffffff;
             --radius: 0.5rem;
         }
 
         .dark {
-            --background: hsl(222, 47%, 11%);
-            --foreground: hsl(213, 31%, 91%);
-            --muted: hsl(222, 47%, 11%);
-            --muted-foreground: hsl(215, 20.2%, 65.1%);
-            --card: hsl(222, 47%, 11%);
-            --card-foreground: hsl(213, 31%, 91%);
-            --border: hsl(215, 27.9%, 16.9%);
-            --primary: hsl(207, 90%, 54%);
-            --primary-foreground: hsl(211, 100%, 99%);
-            --secondary: hsl(222, 47%, 11%);
-            --secondary-foreground: hsl(213, 31%, 91%);
-            --accent: hsl(215, 27.9%, 16.9%);
-            --accent-foreground: hsl(213, 31%, 91%);
-            --destructive: hsl(0, 62.8%, 30.6%);
-            --destructive-foreground: hsl(213, 31%, 91%);
-            --ring: hsl(215, 20.2%, 65.1%);
-        }
-
-        * {
-            box-sizing: border-box;
+            --background: #0f172a;
+            --foreground: #f1f5f9;
+            --muted: #1e293b;
+            --muted-foreground: #94a3b8;
+            --card: #1e293b;
+            --card-foreground: #f1f5f9;
+            --border: #334155;
+            --primary: #3b82f6;
+            --primary-foreground: #ffffff;
+            --secondary: #1e293b;
+            --secondary-foreground: #f1f5f9;
+            --accent: #334155;
+            --accent-foreground: #f1f5f9;
+            --destructive: #ef4444;
+            --destructive-foreground: #ffffff;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--background);
             color: var(--foreground);
-            margin: 0;
-            padding: 0;
             line-height: 1.6;
+            transition: all 0.3s ease;
         }
 
         .container {
@@ -70,7 +64,7 @@
             padding: 0 20px;
         }
 
-        /* Header Styles */
+        /* Header */
         .header {
             background: var(--card);
             border-bottom: 1px solid var(--border);
@@ -78,6 +72,7 @@
             position: sticky;
             top: 0;
             z-index: 50;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .header-content {
@@ -105,14 +100,14 @@
             color: var(--muted-foreground);
             text-decoration: none;
             padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
+            border-radius: var(--radius);
             transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .nav a:hover, .nav a.active {
             color: var(--primary);
-            background: var(--primary);
-            background-opacity: 0.1;
+            background: var(--accent);
         }
 
         .theme-toggle {
@@ -122,7 +117,7 @@
             font-size: 1.2rem;
             cursor: pointer;
             padding: 0.5rem;
-            border-radius: 0.5rem;
+            border-radius: var(--radius);
             transition: all 0.3s ease;
         }
 
@@ -130,7 +125,7 @@
             background: var(--accent);
         }
 
-        /* Main Content Styles */
+        /* Main content */
         .main-content {
             min-height: calc(100vh - 80px);
             padding: 2rem 0;
@@ -148,6 +143,7 @@
             background: linear-gradient(135deg, var(--primary), var(--destructive));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero p {
@@ -157,60 +153,7 @@
             margin: 0 auto;
         }
 
-        /* Card Styles */
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--foreground);
-        }
-
-        .card p {
-            color: var(--muted-foreground);
-            margin-bottom: 1rem;
-        }
-
-        /* Button Styles */
-        .btn {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            background: var(--primary);
-            color: var(--primary-foreground);
-            text-decoration: none;
-            border-radius: var(--radius);
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .btn:hover {
-            background: var(--primary);
-            filter: brightness(0.9);
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: var(--secondary);
-            color: var(--secondary-foreground);
-        }
-
-        /* Progress Cards */
+        /* Progress cards */
         .progress-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -224,12 +167,18 @@
             border-radius: var(--radius);
             padding: 1.5rem;
             text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .progress-icon {
             font-size: 2.5rem;
             margin-bottom: 1rem;
-            color: var(--primary);
         }
 
         .progress-value {
@@ -244,10 +193,10 @@
             font-size: 0.9rem;
         }
 
-        /* Template Grid */
+        /* Template grid */
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
             margin-bottom: 3rem;
         }
@@ -259,17 +208,18 @@
             overflow: hidden;
             transition: all 0.3s ease;
             cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .template-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
         .template-image {
             width: 100%;
             height: 200px;
-            background: linear-gradient(45deg, var(--primary), var(--destructive));
+            background: linear-gradient(135deg, var(--primary), var(--destructive));
             display: flex;
             align-items: center;
             justify-content: center;
@@ -328,76 +278,43 @@
             font-size: 0.9rem;
         }
 
-        /* Learning Flow */
-        .learning-flow {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .learning-flow h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: var(--foreground);
-        }
-
-        .flow-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .flow-step {
-            text-align: center;
-            padding: 1.5rem;
+        .progress-bar {
+            width: 100%;
+            height: 4px;
             background: var(--muted);
-            border-radius: var(--radius);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 1rem;
         }
 
-        .flow-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        .flow-step:nth-child(1) .flow-icon {
+        .progress-fill {
+            height: 100%;
             background: var(--primary);
+            transition: width 0.3s ease;
         }
 
-        .flow-step:nth-child(2) .flow-icon {
-            background: #059669;
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            text-decoration: none;
+            border-radius: var(--radius);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
         }
 
-        .flow-step:nth-child(3) .flow-icon {
-            background: #d97706;
+        .btn:hover {
+            background: var(--primary);
+            filter: brightness(0.9);
+            transform: translateY(-1px);
         }
 
-        .flow-step:nth-child(4) .flow-icon {
-            background: #dc2626;
-        }
-
-        .flow-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--foreground);
-        }
-
-        .flow-description {
-            font-size: 0.9rem;
-            color: var(--muted-foreground);
-        }
-
-        /* Code Editor Modal */
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -407,12 +324,12 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal.active {
             display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .modal-content {
@@ -424,6 +341,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
         .modal-header {
@@ -432,6 +350,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: var(--muted);
         }
 
         .modal-title {
@@ -477,7 +396,7 @@
 
         .editor-tabs {
             display: flex;
-            background: var(--muted);
+            flex: 1;
         }
 
         .editor-tab {
@@ -504,7 +423,6 @@
         }
 
         .run-button {
-            margin-left: auto;
             margin-right: 1rem;
             padding: 0.5rem 1rem;
             background: var(--primary);
@@ -544,11 +462,6 @@
             line-height: 1.5;
         }
 
-        .code-editor:focus {
-            outline: none;
-            box-shadow: inset 0 0 0 2px var(--primary);
-        }
-
         .preview-panel {
             flex: 1;
             display: flex;
@@ -575,7 +488,81 @@
             border: none;
         }
 
-        /* Responsive Design */
+        /* Learning flow */
+        .learning-flow {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .learning-flow h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--foreground);
+        }
+
+        .flow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .flow-step {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--muted);
+            border-radius: var(--radius);
+            transition: all 0.3s ease;
+        }
+
+        .flow-step:hover {
+            transform: translateY(-2px);
+        }
+
+        .flow-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .flow-step:nth-child(1) .flow-icon {
+            background: var(--primary);
+        }
+
+        .flow-step:nth-child(2) .flow-icon {
+            background: #059669;
+        }
+
+        .flow-step:nth-child(3) .flow-icon {
+            background: #d97706;
+        }
+
+        .flow-step:nth-child(4) .flow-icon {
+            background: #dc2626;
+        }
+
+        .flow-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--foreground);
+        }
+
+        .flow-description {
+            font-size: 0.9rem;
+            color: var(--muted-foreground);
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2rem;
@@ -628,20 +615,7 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        .animate-pulse {
-            animation: pulse 2s infinite;
-        }
-
-        /* Dark mode styles */
+        /* Dark mode adjustments */
         .dark .template-image {
             background: linear-gradient(45deg, #3b82f6, #ef4444);
         }
@@ -668,521 +642,78 @@
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <i class="fas fa-code"></i>
+                    CodeCraft
+                </a>
+                <nav class="nav">
+                    <a href="#" class="active">Dashboard</a>
+                    <a href="#">Templates</a>
+                    <a href="#">Progress</a>
+                    <a href="#">Achievements</a>
+                </nav>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+    <main class="main-content">
+        <div class="container">
+            <section class="hero">
+                <h1 class="animate-fade-in">Welcome to CodeCraft</h1>
+                <p class="animate-fade-in">
+                    Master frontend development by building famous website templates step by step.
+                    Learn HTML, CSS, and JavaScript through interactive lessons and live coding.
+                </p>
+            </section>
 
-        // Sample data
-        const templates = [
-            {
-                id: 1,
-                name: "TailwindCSS Homepage",
-                description: "Learn responsive design with utility-first CSS framework",
-                difficulty: "beginner",
-                estimatedTime: "2-3 hours",
-                icon: "🎨",
-                progress: 65
-            },
-            {
-                id: 2,
-                name: "CodePen Interface",
-                description: "Build an interactive code editor with live preview",
-                difficulty: "intermediate",
-                estimatedTime: "4-5 hours",
-                icon: "⚡",
-                progress: 30
-            },
-            {
-                id: 3,
-                name: "GitHub Repository Page",
-                description: "Master complex layouts and interactive components",
-                difficulty: "advanced",
-                estimatedTime: "6-8 hours",
-                icon: "🚀",
-                progress: 0
-            }
-        ];
-
-        const sampleHtml = `<div class="container">
-    <h1>Welcome to CodeCraft!</h1>
-    <p>This is your live preview. Edit the code to see changes in real-time.</p>
-    <button class="btn" onclick="showMessage()">Click Me!</button>
-    <div id="output"></div>
-</div>`;
-
-        const sampleCss = `body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.container {
-    background: white;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-    text-align: center;
-    max-width: 500px;
-    animation: fadeIn 0.8s ease-in;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-h1 {
-    color: #333;
-    margin-bottom: 20px;
-    font-size: 2.5em;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-}
-
-p {
-    color: #666;
-    line-height: 1.6;
-    margin-bottom: 30px;
-    font-size: 1.1em;
-}
-
-.btn {
-    background: linear-gradient(45deg, #667eea, #764ba2);
-    color: white;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-#output {
-    margin-top: 20px;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    min-height: 20px;
-    color: #333;
-    font-weight: bold;
-}`;
-
-        const sampleJs = `function showMessage() {
-    const output = document.getElementById('output');
-    const messages = [
-        '🎉 Hello, CodeCraft!',
-        '✨ You clicked the button!',
-        '🚀 Keep coding!',
-        '💡 Learning is fun!',
-        '🎯 Great job!'
-    ];
-    
-    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-    output.innerHTML = randomMessage;
-    
-    // Add some animation
-    output.style.transform = 'scale(0.8)';
-    setTimeout(() => {
-        output.style.transform = 'scale(1)';
-    }, 100);
-}
-
-// Add some interactivity when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    const container = document.querySelector('.container');
-    container.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.02)';
-    });
-    
-    container.addEventListener('mouseleave', function() {
-        this.style.transform = 'scale(1)';
-    });
-});`;
-
-        // Theme Hook
-        function useTheme() {
-            const [theme, setTheme] = useState('light');
-
-            useEffect(() => {
-                const saved = localStorage.getItem('theme');
-                if (saved) {
-                    setTheme(saved);
-                }
-            }, []);
-
-            useEffect(() => {
-                localStorage.setItem('theme', theme);
-                document.documentElement.className = theme;
-            }, [theme]);
-
-            const toggleTheme = () => {
-                setTheme(prev => prev === 'light' ? 'dark' : 'light');
-            };
-
-            return { theme, toggleTheme };
-        }
-
-        // Header Component
-        function Header() {
-            const { theme, toggleTheme } = useTheme();
-
-            return (
-                <header className="header">
-                    <div className="container">
-                        <div className="header-content">
-                            <a href="#" className="logo">
-                                <i className="fas fa-code"></i>
-                                CodeCraft
-                            </a>
-                            <nav className="nav">
-                                <a href="#" className="active">Dashboard</a>
-                                <a href="#">Templates</a>
-                                <a href="#">Progress</a>
-                                <a href="#">Achievements</a>
-                            </nav>
-                            <button className="theme-toggle" onClick={toggleTheme}>
-                                {theme === 'light' ? <i className="fas fa-moon"></i> : <i className="fas fa-sun"></i>}
-                            </button>
-                        </div>
+            <div class="progress-grid">
+                <div class="progress-card animate-fade-in">
+                    <div class="progress-icon" style="color: #3b82f6;">
+                        <i class="fas fa-trophy"></i>
                     </div>
-                </header>
-            );
-        }
-
-        // Progress Cards Component
-        function ProgressCards() {
-            const stats = [
-                { icon: 'fas fa-trophy', value: '1,250', label: 'Total XP', color: '#3b82f6' },
-                { icon: 'fas fa-fire', value: '7', label: 'Day Streak', color: '#ef4444' },
-                { icon: 'fas fa-check-circle', value: '3/12', label: 'Completed', color: '#10b981' },
-                { icon: 'fas fa-medal', value: '5', label: 'Badges', color: '#f59e0b' }
-            ];
-
-            return (
-                <div className="progress-grid">
-                    {stats.map((stat, index) => (
-                        <div key={index} className="progress-card animate-fade-in">
-                            <div className="progress-icon">
-                                <i className={stat.icon} style={{ color: stat.color }}></i>
-                            </div>
-                            <div className="progress-value">{stat.value}</div>
-                            <div className="progress-label">{stat.label}</div>
-                        </div>
-                    ))}
+                    <div class="progress-value">1,250</div>
+                    <div class="progress-label">Total XP</div>
                 </div>
-            );
-        }
-
-        // Template Card Component
-        function TemplateCard({ template, onStart }) {
-            const getDifficultyClass = (difficulty) => {
-                switch(difficulty) {
-                    case 'beginner': return 'difficulty-beginner';
-                    case 'intermediate': return 'difficulty-intermediate';
-                    case 'advanced': return 'difficulty-advanced';
-                    default: return 'difficulty-beginner';
-                }
-            };
-
-            return (
-                <div className="template-card animate-fade-in" onClick={() => onStart(template)}>
-                    <div className="template-image">
-                        {template.icon}
+                <div class="progress-card animate-fade-in">
+                    <div class="progress-icon" style="color: #ef4444;">
+                        <i class="fas fa-fire"></i>
                     </div>
-                    <div className="template-content">
-                        <h3 className="template-title">{template.name}</h3>
-                        <p className="template-description">{template.description}</p>
-                        <div className="template-meta">
-                            <span className={`template-difficulty ${getDifficultyClass(template.difficulty)}`}>
-                                {template.difficulty}
-                            </span>
-                            <span className="template-time">
-                                <i className="fas fa-clock"></i> {template.estimatedTime}
-                            </span>
-                        </div>
-                        {template.progress > 0 && (
-                            <div style={{ marginBottom: '1rem' }}>
-                                <div style={{ 
-                                    width: '100%', 
-                                    height: '4px', 
-                                    background: 'var(--muted)', 
-                                    borderRadius: '2px',
-                                    overflow: 'hidden'
-                                }}>
-                                    <div style={{ 
-                                        width: `${template.progress}%`, 
-                                        height: '100%', 
-                                        background: 'var(--primary)',
-                                        transition: 'width 0.3s ease'
-                                    }}></div>
-                                </div>
-                                <span style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>
-                                    {template.progress}% Complete
-                                </span>
-                            </div>
-                        )}
-                        <button className="btn">
-                            {template.progress > 0 ? 'Continue' : 'Start'} Learning
-                        </button>
+                    <div class="progress-value">7</div>
+                    <div class="progress-label">Day Streak</div>
+                </div>
+                <div class="progress-card animate-fade-in">
+                    <div class="progress-icon" style="color: #10b981;">
+                        <i class="fas fa-check-circle"></i>
                     </div>
+                    <div class="progress-value">3/12</div>
+                    <div class="progress-label">Completed</div>
                 </div>
-            );
-        }
-
-        // Code Editor Modal Component
-        function CodeEditorModal({ isOpen, onClose, template }) {
-            const [activeTab, setActiveTab] = useState('html');
-            const [htmlCode, setHtmlCode] = useState(sampleHtml);
-            const [cssCode, setCssCode] = useState(sampleCss);
-            const [jsCode, setJsCode] = useState(sampleJs);
-            const iframeRef = useRef(null);
-
-            const updatePreview = () => {
-                if (iframeRef.current) {
-                    const iframe = iframeRef.current;
-                    try {
-                        const doc = iframe.contentDocument || iframe.contentWindow.document;
-                        if (doc) {
-                            const fullHtml = `
-                                <!DOCTYPE html>
-                                <html lang="en">
-                                <head>
-                                    <meta charset="UTF-8">
-                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                    <title>Live Preview</title>
-                                    <style>${cssCode}</style>
-                                </head>
-                                <body>
-                                    ${htmlCode}
-                                    <script>${jsCode}</script>
-                                </body>
-                                </html>
-                            `;
-                            doc.open();
-                            doc.write(fullHtml);
-                            doc.close();
-                        }
-                    } catch (error) {
-                        console.error('Error updating preview:', error);
-                    }
-                }
-            };
-
-            const runCode = () => {
-                updatePreview();
-            };
-
-            useEffect(() => {
-                if (isOpen) {
-                    const timer = setTimeout(updatePreview, 300);
-                    return () => clearTimeout(timer);
-                }
-            }, [htmlCode, cssCode, jsCode, isOpen]);
-
-            const getCurrentCode = () => {
-                switch(activeTab) {
-                    case 'html': return htmlCode;
-                    case 'css': return cssCode;
-                    case 'js': return jsCode;
-                    default: return htmlCode;
-                }
-            };
-
-            const setCurrentCode = (code) => {
-                switch(activeTab) {
-                    case 'html': setHtmlCode(code); break;
-                    case 'css': setCssCode(code); break;
-                    case 'js': setJsCode(code); break;
-                }
-            };
-
-            if (!isOpen) return null;
-
-            return (
-                <div className="modal active">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h2 className="modal-title">
-                                {template ? template.name : 'Code Editor'}
-                            </h2>
-                            <button className="close-btn" onClick={onClose}>
-                                <i className="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div className="modal-body">
-                            <div className="editor-panel">
-                                <div className="editor-header">
-                                    <div className="editor-tabs">
-                                        <button 
-                                            className={`editor-tab ${activeTab === 'html' ? 'active' : ''}`}
-                                            onClick={() => setActiveTab('html')}
-                                        >
-                                            <i className="fab fa-html5"></i> HTML
-                                        </button>
-                                        <button 
-                                            className={`editor-tab ${activeTab === 'css' ? 'active' : ''}`}
-                                            onClick={() => setActiveTab('css')}
-                                        >
-                                            <i className="fab fa-css3-alt"></i> CSS
-                                        </button>
-                                        <button 
-                                            className={`editor-tab ${activeTab === 'js' ? 'active' : ''}`}
-                                            onClick={() => setActiveTab('js')}
-                                        >
-                                            <i className="fab fa-js"></i> JavaScript
-                                        </button>
-                                    </div>
-                                    <button className="run-button" onClick={runCode}>
-                                        <i className="fas fa-play"></i> Run Code
-                                    </button>
-                                </div>
-                                <div className="editor-container">
-                                    <textarea
-                                        className="code-editor"
-                                        value={getCurrentCode()}
-                                        onChange={(e) => setCurrentCode(e.target.value)}
-                                        placeholder={`Write your ${activeTab.toUpperCase()} code here...`}
-                                    />
-                                </div>
-                            </div>
-                            <div className="preview-panel">
-                                <div className="preview-header">
-                                    <i className="fas fa-eye"></i> Live Preview
-                                </div>
-                                <div className="preview-container">
-                                    <iframe
-                                        ref={iframeRef}
-                                        className="preview-iframe"
-                                        title="Live Preview"
-                                        sandbox="allow-scripts allow-same-origin"
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                <div class="progress-card animate-fade-in">
+                    <div class="progress-icon" style="color: #f59e0b;">
+                        <i class="fas fa-medal"></i>
                     </div>
+                    <div class="progress-value">5</div>
+                    <div class="progress-label">Badges</div>
                 </div>
-            );
-        }
+            </div>
 
-        // Learning Flow Component
-        function LearningFlow() {
-            const steps = [
-                {
-                    icon: 'fas fa-play',
-                    title: 'Watch & Learn',
-                    description: 'Start with explanation and demonstration'
-                },
-                {
-                    icon: 'fas fa-code',
-                    title: 'Code Along',
-                    description: 'Write code step-by-step with guidance'
-                },
-                {
-                    icon: 'fas fa-question-circle',
-                    title: 'Quiz Time',
-                    description: 'Test your understanding with interactive quizzes'
-                },
-                {
-                    icon: 'fas fa-trophy',
-                    title: 'Final Challenge',
-                    description: 'Rebuild the entire template from scratch'
-                }
-            ];
-
-            return (
-                <div className="learning-flow">
-                    <h2>How the Learning Flow Works</h2>
-                    <div className="flow-grid">
-                        {steps.map((step, index) => (
-                            <div key={index} className="flow-step animate-fade-in">
-                                <div className="flow-icon">
-                                    <i className={step.icon}></i>
-                                </div>
-                                <h4 className="flow-title">{step.title}</h4>
-                                <p className="flow-description">{step.description}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            );
-        }
-
-        // Main App Component
-        function App() {
-            const [modalOpen, setModalOpen] = useState(false);
-            const [selectedTemplate, setSelectedTemplate] = useState(null);
-
-            const handleStartTemplate = (template) => {
-                setSelectedTemplate(template);
-                setModalOpen(true);
-            };
-
-            const handleCloseModal = () => {
-                setModalOpen(false);
-                setSelectedTemplate(null);
-            };
-
-            return (
-                <div>
-                    <Header />
-                    <main className="main-content">
-                        <div className="container">
-                            <section className="hero">
-                                <h1 className="animate-fade-in">Welcome to CodeCraft</h1>
-                                <p className="animate-fade-in">
-                                    Master frontend development by building famous website templates step by step.
-                                    Learn HTML, CSS, and JavaScript through interactive lessons and live coding.
-                                </p>
-                            </section>
-
-                            <ProgressCards />
-
-                            <section>
-                                <h2 style={{ 
-                                    fontSize: '2rem', 
-                                    fontWeight: '700', 
-                                    marginBottom: '2rem',
-                                    color: 'var(--foreground)'
-                                }}>
-                                    Featured Templates
-                                </h2>
-                                <div className="template-grid">
-                                    {templates.map(template => (
-                                        <TemplateCard 
-                                            key={template.id} 
-                                            template={template}
-                                            onStart={handleStartTemplate}
-                                        />
-                                    ))}
-                                </div>
-                            </section>
-
-                            <LearningFlow />
-                        </div>
-                    </main>
-
-                    <CodeEditorModal 
-                        isOpen={modalOpen}
-                        onClose={handleCloseModal}
-                        template={selectedTemplate}
-                    />
-                </div>
-            );
-        }
-
-        // Render the app
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
-</body>
-</html>
+            <section>
+                <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 2rem; color: var(--foreground);">
+                    Featured Templates
+                </h2>
+                <div class="template-grid">
+                    <div class="template-card animate-fade-in" onclick="openEditor('TailwindCSS Homepage')">
+                        <div class="template-image">🎨</div>
+                        <div class="template-content">
+                            <h3 class="template-title">TailwindCSS Homepage</h3>
+                            <p class="template-description">Learn responsive design with utility-first CSS framework</p>
+                            <div class="template-meta">
+                                <span class="template-difficulty difficulty-beginner">beginner</span>
+                                <span class="template-time">
+                                    <i
