@@ -469,11 +469,57 @@
         }
 
         .editor-header {
-            padding: 1rem;
             background: var(--muted);
             border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+        }
+
+        .editor-tabs {
+            display: flex;
+            background: var(--muted);
+        }
+
+        .editor-tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--muted);
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
             font-weight: 500;
+            color: var(--muted-foreground);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .editor-tab:hover {
             color: var(--foreground);
+            background: var(--accent);
+        }
+
+        .editor-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: var(--card);
+        }
+
+        .run-button {
+            margin-left: auto;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .run-button:hover {
+            background: var(--primary);
+            filter: brightness(0.9);
         }
 
         .editor-container {
@@ -492,6 +538,15 @@
             border: none;
             outline: none;
             resize: none;
+            tab-size: 2;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .code-editor:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 2px var(--primary);
         }
 
         .preview-panel {
@@ -649,65 +704,111 @@
             }
         ];
 
-        const sampleCode = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 500px;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 2.5em;
-        }
-        p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-        .btn {
-            background: #667eea;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .btn:hover {
-            background: #5a67d8;
-            transform: translateY(-2px);
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Welcome to CodeCraft!</h1>
-        <p>This is your live preview. Edit the code on the left to see changes in real-time.</p>
-        <button class="btn" onclick="alert('Hello, CodeCraft!')">Click Me!</button>
-    </div>
-</body>
-</html>`;
+        const sampleHtml = `<div class="container">
+    <h1>Welcome to CodeCraft!</h1>
+    <p>This is your live preview. Edit the code to see changes in real-time.</p>
+    <button class="btn" onclick="showMessage()">Click Me!</button>
+    <div id="output"></div>
+</div>`;
+
+        const sampleCss = `body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 500px;
+    animation: fadeIn 0.8s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    font-size: 1.1em;
+}
+
+.btn {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+#output {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    min-height: 20px;
+    color: #333;
+    font-weight: bold;
+}`;
+
+        const sampleJs = `function showMessage() {
+    const output = document.getElementById('output');
+    const messages = [
+        '🎉 Hello, CodeCraft!',
+        '✨ You clicked the button!',
+        '🚀 Keep coding!',
+        '💡 Learning is fun!',
+        '🎯 Great job!'
+    ];
+    
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    output.innerHTML = randomMessage;
+    
+    // Add some animation
+    output.style.transform = 'scale(0.8)';
+    setTimeout(() => {
+        output.style.transform = 'scale(1)';
+    }, 100);
+}
+
+// Add some interactivity when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.container');
+    container.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.02)';
+    });
+    
+    container.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
+    });
+});`;
 
         // Theme Hook
         function useTheme() {
@@ -841,20 +942,70 @@
 
         // Code Editor Modal Component
         function CodeEditorModal({ isOpen, onClose, template }) {
-            const [code, setCode] = useState(sampleCode);
+            const [activeTab, setActiveTab] = useState('html');
+            const [htmlCode, setHtmlCode] = useState(sampleHtml);
+            const [cssCode, setCssCode] = useState(sampleCss);
+            const [jsCode, setJsCode] = useState(sampleJs);
             const iframeRef = useRef(null);
 
-            useEffect(() => {
+            const updatePreview = () => {
                 if (iframeRef.current) {
                     const iframe = iframeRef.current;
-                    const doc = iframe.contentDocument || iframe.contentWindow.document;
-                    if (doc) {
-                        doc.open();
-                        doc.write(code);
-                        doc.close();
+                    try {
+                        const doc = iframe.contentDocument || iframe.contentWindow.document;
+                        if (doc) {
+                            const fullHtml = `
+                                <!DOCTYPE html>
+                                <html lang="en">
+                                <head>
+                                    <meta charset="UTF-8">
+                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                    <title>Live Preview</title>
+                                    <style>${cssCode}</style>
+                                </head>
+                                <body>
+                                    ${htmlCode}
+                                    <script>${jsCode}</script>
+                                </body>
+                                </html>
+                            `;
+                            doc.open();
+                            doc.write(fullHtml);
+                            doc.close();
+                        }
+                    } catch (error) {
+                        console.error('Error updating preview:', error);
                     }
                 }
-            }, [code]);
+            };
+
+            const runCode = () => {
+                updatePreview();
+            };
+
+            useEffect(() => {
+                if (isOpen) {
+                    const timer = setTimeout(updatePreview, 300);
+                    return () => clearTimeout(timer);
+                }
+            }, [htmlCode, cssCode, jsCode, isOpen]);
+
+            const getCurrentCode = () => {
+                switch(activeTab) {
+                    case 'html': return htmlCode;
+                    case 'css': return cssCode;
+                    case 'js': return jsCode;
+                    default: return htmlCode;
+                }
+            };
+
+            const setCurrentCode = (code) => {
+                switch(activeTab) {
+                    case 'html': setHtmlCode(code); break;
+                    case 'css': setCssCode(code); break;
+                    case 'js': setJsCode(code); break;
+                }
+            };
 
             if (!isOpen) return null;
 
@@ -872,14 +1023,36 @@
                         <div className="modal-body">
                             <div className="editor-panel">
                                 <div className="editor-header">
-                                    <i className="fas fa-code"></i> HTML/CSS/JS Editor
+                                    <div className="editor-tabs">
+                                        <button 
+                                            className={`editor-tab ${activeTab === 'html' ? 'active' : ''}`}
+                                            onClick={() => setActiveTab('html')}
+                                        >
+                                            <i className="fab fa-html5"></i> HTML
+                                        </button>
+                                        <button 
+                                            className={`editor-tab ${activeTab === 'css' ? 'active' : ''}`}
+                                            onClick={() => setActiveTab('css')}
+                                        >
+                                            <i className="fab fa-css3-alt"></i> CSS
+                                        </button>
+                                        <button 
+                                            className={`editor-tab ${activeTab === 'js' ? 'active' : ''}`}
+                                            onClick={() => setActiveTab('js')}
+                                        >
+                                            <i className="fab fa-js"></i> JavaScript
+                                        </button>
+                                    </div>
+                                    <button className="run-button" onClick={runCode}>
+                                        <i className="fas fa-play"></i> Run Code
+                                    </button>
                                 </div>
                                 <div className="editor-container">
                                     <textarea
                                         className="code-editor"
-                                        value={code}
-                                        onChange={(e) => setCode(e.target.value)}
-                                        placeholder="Write your code here..."
+                                        value={getCurrentCode()}
+                                        onChange={(e) => setCurrentCode(e.target.value)}
+                                        placeholder={`Write your ${activeTab.toUpperCase()} code here...`}
                                     />
                                 </div>
                             </div>
