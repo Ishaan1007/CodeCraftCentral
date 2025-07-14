@@ -716,4 +716,86 @@
                             <div class="template-meta">
                                 <span class="template-difficulty difficulty-beginner">beginner</span>
                                 <span class="template-time">
-                                    <i
+                                                                    <i class="fas fa-clock"></i> ~45 min
+                                </span>
+                            </div>
+                            <button class="btn">Start Learning</button>
+                        </div>
+                    </div>
+                    <!-- You can add more template-cards here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal for Live Editor -->
+    <div class="modal" id="editor-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title" id="modal-title">Editor</span>
+                <button class="close-btn" onclick="closeEditor()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="editor-panel">
+                    <div class="editor-header">
+                        <div class="editor-tabs">
+                            <button class="editor-tab active" onclick="switchTab('html')">HTML</button>
+                            <button class="editor-tab" onclick="switchTab('css')">CSS</button>
+                            <button class="editor-tab" onclick="switchTab('js')">JS</button>
+                        </div>
+                        <button class="run-button" onclick="runCode()">Run</button>
+                    </div>
+                    <div class="editor-container">
+                        <textarea id="code-editor" class="code-editor">
+<!-- Start coding here -->
+                        </textarea>
+                    </div>
+                </div>
+                <div class="preview-panel">
+                    <div class="preview-header">Live Preview</div>
+                    <div class="preview-container">
+                        <iframe id="preview-frame" class="preview-iframe"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        }
+
+        // Modal open/close
+        function openEditor(templateName) {
+            document.getElementById('editor-modal').classList.add('active');
+            document.getElementById('modal-title').innerText = templateName;
+            document.getElementById('code-editor').value = '<h1>' + templateName + '</h1>';
+            runCode();
+        }
+
+        function closeEditor() {
+            document.getElementById('editor-modal').classList.remove('active');
+        }
+
+        // Tab switch (optional functionality placeholder)
+        function switchTab(tab) {
+            document.querySelectorAll('.editor-tab').forEach(el => el.classList.remove('active'));
+            document.querySelector('.editor-tab:nth-child(' + (tab === 'html' ? '1' : tab === 'css' ? '2' : '3') + ')').classList.add('active');
+            // Simplified: Single textarea for simplicity
+        }
+
+        // Live preview
+        function runCode() {
+            const iframe = document.getElementById('preview-frame');
+            const code = document.getElementById('code-editor').value;
+            iframe.srcdoc = code;
+        }
+    </script>
+</body>
+</html>
+
