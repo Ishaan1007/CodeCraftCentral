@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeCraft - Interactive Coding Education Platform</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/monaco-editor@0.50.0/min/vs/loader.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --background: hsl(0, 0%, 100%);
+            --foreground: hsl(20, 14.3%, 4.1%);
+            --muted: hsl(60, 4.8%, 95.9%);
+            --muted-foreground: hsl(25, 5.3%, 44.7%);
+            --card: hsl(0, 0%, 100%);
+            --card-foreground: hsl(20, 14.3%, 4.1%);
+            --border: hsl(20, 5.9%, 90%);
+            --primary: hsl(207, 90%, 54%);
+            --primary-foreground: hsl(211, 100%, 99%);
+            --secondary: hsl(60, 4.8%, 95.9%);
+            --secondary-foreground: hsl(24, 9.8%, 10%);
+            --accent: hsl(60, 4.8%, 95.9%);
+            --accent-foreground: hsl(24, 9.8%, 10%);
+            --destructive: hsl(0, 84.2%, 60.2%);
+            --destructive-foreground: hsl(60, 9.1%, 97.8%);
+            --ring: hsl(20, 14.3%, 4.1%);
+            --radius: 0.5rem;
+        }
+
+        .dark {
+            --background: hsl(222, 47%, 11%);
+            --foreground: hsl(213, 31%, 91%);
+            --muted: hsl(222, 47%, 11%);
+            --muted-foreground: hsl(215, 20.2%, 65.1%);
+            --card: hsl(222, 47%, 11%);
+            --card-foreground: hsl(213, 31%, 91%);
+            --border: hsl(215, 27.9%, 16.9%);
+            --primary: hsl(207, 90%, 54%);
+            --primary-foreground: hsl(211, 100%, 99%);
+            --secondary: hsl(222, 47%, 11%);
+            --secondary-foreground: hsl(213, 31%, 91%);
+            --accent: hsl(215, 27.9%, 16.9%);
+            --accent-foreground: hsl(213, 31%, 91%);
+            --destructive: hsl(0, 62.8%, 30.6%);
+            --destructive-foreground: hsl(213, 31%, 91%);
+            --ring: hsl(215, 20.2%, 65.1%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav a {
+            color: var(--muted-foreground);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav a:hover, .nav a.active {
+            color: var(--primary);
+            background: var(--primary);
+            background-opacity: 0.1;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--foreground);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            min-height: calc(100vh - 80px);
+            padding: 2rem 0;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--destructive));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--muted-foreground);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--foreground);
+        }
+
+        .card p {
+            color: var(--muted-foreground);
+            margin-bottom: 1rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            text-decoration: none;
+            border-radius: var(--radius);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            filter: brightness(0.9);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--secondary-foreground);
+        }
+
+        /* Progress Cards */
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .progress-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .progress-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .progress-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--foreground);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+            color: var(--muted-foreground);
+            font-size: 0.9rem;
+        }
+
+        /* Template Grid */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .template-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .template-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .template-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, var(--primary), var(--destructive));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .template-content {
+            padding: 1.5rem;
+        }
+
+        .template-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--foreground);
+        }
+
+        .template-description {
+            color: var(--muted-foreground);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .template-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .template-difficulty {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .difficulty-beginner {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .difficulty-intermediate {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .difficulty-advanced {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .template-time {
+            color: var(--muted-foreground);
+            font-size: 0.9rem;
+        }
+
+        /* Learning Flow */
+        .learning-flow {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .learning-flow h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--foreground);
+        }
+
+        .flow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .flow-step {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--muted);
+            border-radius: var(--radius);
+        }
+
+        .flow-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .flow-step:nth-child(1) .flow-icon {
+            background: var(--primary);
+        }
+
+        .flow-step:nth-child(2) .flow-icon {
+            background: #059669;
+        }
+
+        .flow-step:nth-child(3) .flow-icon {
+            background: #d97706;
+        }
+
+        .flow-step:nth-child(4) .flow-icon {
+            background: #dc2626;
+        }
+
+        .flow-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--foreground);
+        }
+
+        .flow-description {
+            font-size: 0.9rem;
+            color: var(--muted-foreground);
+        }
+
+        /* Code Editor Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card);
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 1200px;
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--foreground);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--muted-foreground);
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: var(--accent);
+            color: var(--foreground);
+        }
+
+        .modal-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .editor-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-header {
+            padding: 1rem;
+            background: var(--muted);
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+            color: var(--foreground);
+        }
+
+        .editor-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .code-editor {
+            width: 100%;
+            height: 100%;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            padding: 1rem;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border: none;
+            outline: none;
+            resize: none;
+        }
+
+        .preview-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border);
+        }
+
+        .preview-header {
+            padding: 1rem;
+            background: var(--muted);
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+            color: var(--foreground);
+        }
+
+        .preview-container {
+            flex: 1;
+            background: white;
+        }
+
+        .preview-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .flow-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                height: 90%;
+            }
+
+            .modal-body {
+                flex-direction: column;
+            }
+
+            .preview-panel {
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Dark mode styles */
+        .dark .template-image {
+            background: linear-gradient(45deg, #3b82f6, #ef4444);
+        }
+
+        .dark .difficulty-beginner {
+            background: #064e3b;
+            color: #6ee7b7;
+        }
+
+        .dark .difficulty-intermediate {
+            background: #92400e;
+            color: #fbbf24;
+        }
+
+        .dark .difficulty-advanced {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .dark .code-editor {
+            background: #0d1117;
+            color: #c9d1d9;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Sample data
+        const templates = [
+            {
+                id: 1,
+                name: "TailwindCSS Homepage",
+                description: "Learn responsive design with utility-first CSS framework",
+                difficulty: "beginner",
+                estimatedTime: "2-3 hours",
+                icon: "🎨",
+                progress: 65
+            },
+            {
+                id: 2,
+                name: "CodePen Interface",
+                description: "Build an interactive code editor with live preview",
+                difficulty: "intermediate",
+                estimatedTime: "4-5 hours",
+                icon: "⚡",
+                progress: 30
+            },
+            {
+                id: 3,
+                name: "GitHub Repository Page",
+                description: "Master complex layouts and interactive components",
+                difficulty: "advanced",
+                estimatedTime: "6-8 hours",
+                icon: "🚀",
+                progress: 0
+            }
+        ];
+
+        const sampleCode = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to CodeCraft!</h1>
+        <p>This is your live preview. Edit the code on the left to see changes in real-time.</p>
+        <button class="btn" onclick="alert('Hello, CodeCraft!')">Click Me!</button>
+    </div>
+</body>
+</html>`;
+
+        // Theme Hook
+        function useTheme() {
+            const [theme, setTheme] = useState('light');
+
+            useEffect(() => {
+                const saved = localStorage.getItem('theme');
+                if (saved) {
+                    setTheme(saved);
+                }
+            }, []);
+
+            useEffect(() => {
+                localStorage.setItem('theme', theme);
+                document.documentElement.className = theme;
+            }, [theme]);
+
+            const toggleTheme = () => {
+                setTheme(prev => prev === 'light' ? 'dark' : 'light');
+            };
+
+            return { theme, toggleTheme };
+        }
+
+        // Header Component
+        function Header() {
+            const { theme, toggleTheme } = useTheme();
+
+            return (
+                <header className="header">
+                    <div className="container">
+                        <div className="header-content">
+                            <a href="#" className="logo">
+                                <i className="fas fa-code"></i>
+                                CodeCraft
+                            </a>
+                            <nav className="nav">
+                                <a href="#" className="active">Dashboard</a>
+                                <a href="#">Templates</a>
+                                <a href="#">Progress</a>
+                                <a href="#">Achievements</a>
+                            </nav>
+                            <button className="theme-toggle" onClick={toggleTheme}>
+                                {theme === 'light' ? <i className="fas fa-moon"></i> : <i className="fas fa-sun"></i>}
+                            </button>
+                        </div>
+                    </div>
+                </header>
+            );
+        }
+
+        // Progress Cards Component
+        function ProgressCards() {
+            const stats = [
+                { icon: 'fas fa-trophy', value: '1,250', label: 'Total XP', color: '#3b82f6' },
+                { icon: 'fas fa-fire', value: '7', label: 'Day Streak', color: '#ef4444' },
+                { icon: 'fas fa-check-circle', value: '3/12', label: 'Completed', color: '#10b981' },
+                { icon: 'fas fa-medal', value: '5', label: 'Badges', color: '#f59e0b' }
+            ];
+
+            return (
+                <div className="progress-grid">
+                    {stats.map((stat, index) => (
+                        <div key={index} className="progress-card animate-fade-in">
+                            <div className="progress-icon">
+                                <i className={stat.icon} style={{ color: stat.color }}></i>
+                            </div>
+                            <div className="progress-value">{stat.value}</div>
+                            <div className="progress-label">{stat.label}</div>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        // Template Card Component
+        function TemplateCard({ template, onStart }) {
+            const getDifficultyClass = (difficulty) => {
+                switch(difficulty) {
+                    case 'beginner': return 'difficulty-beginner';
+                    case 'intermediate': return 'difficulty-intermediate';
+                    case 'advanced': return 'difficulty-advanced';
+                    default: return 'difficulty-beginner';
+                }
+            };
+
+            return (
+                <div className="template-card animate-fade-in" onClick={() => onStart(template)}>
+                    <div className="template-image">
+                        {template.icon}
+                    </div>
+                    <div className="template-content">
+                        <h3 className="template-title">{template.name}</h3>
+                        <p className="template-description">{template.description}</p>
+                        <div className="template-meta">
+                            <span className={`template-difficulty ${getDifficultyClass(template.difficulty)}`}>
+                                {template.difficulty}
+                            </span>
+                            <span className="template-time">
+                                <i className="fas fa-clock"></i> {template.estimatedTime}
+                            </span>
+                        </div>
+                        {template.progress > 0 && (
+                            <div style={{ marginBottom: '1rem' }}>
+                                <div style={{ 
+                                    width: '100%', 
+                                    height: '4px', 
+                                    background: 'var(--muted)', 
+                                    borderRadius: '2px',
+                                    overflow: 'hidden'
+                                }}>
+                                    <div style={{ 
+                                        width: `${template.progress}%`, 
+                                        height: '100%', 
+                                        background: 'var(--primary)',
+                                        transition: 'width 0.3s ease'
+                                    }}></div>
+                                </div>
+                                <span style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>
+                                    {template.progress}% Complete
+                                </span>
+                            </div>
+                        )}
+                        <button className="btn">
+                            {template.progress > 0 ? 'Continue' : 'Start'} Learning
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        // Code Editor Modal Component
+        function CodeEditorModal({ isOpen, onClose, template }) {
+            const [code, setCode] = useState(sampleCode);
+            const iframeRef = useRef(null);
+
+            useEffect(() => {
+                if (iframeRef.current) {
+                    const iframe = iframeRef.current;
+                    const doc = iframe.contentDocument || iframe.contentWindow.document;
+                    if (doc) {
+                        doc.open();
+                        doc.write(code);
+                        doc.close();
+                    }
+                }
+            }, [code]);
+
+            if (!isOpen) return null;
+
+            return (
+                <div className="modal active">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h2 className="modal-title">
+                                {template ? template.name : 'Code Editor'}
+                            </h2>
+                            <button className="close-btn" onClick={onClose}>
+                                <i className="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="editor-panel">
+                                <div className="editor-header">
+                                    <i className="fas fa-code"></i> HTML/CSS/JS Editor
+                                </div>
+                                <div className="editor-container">
+                                    <textarea
+                                        className="code-editor"
+                                        value={code}
+                                        onChange={(e) => setCode(e.target.value)}
+                                        placeholder="Write your code here..."
+                                    />
+                                </div>
+                            </div>
+                            <div className="preview-panel">
+                                <div className="preview-header">
+                                    <i className="fas fa-eye"></i> Live Preview
+                                </div>
+                                <div className="preview-container">
+                                    <iframe
+                                        ref={iframeRef}
+                                        className="preview-iframe"
+                                        title="Live Preview"
+                                        sandbox="allow-scripts allow-same-origin"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Learning Flow Component
+        function LearningFlow() {
+            const steps = [
+                {
+                    icon: 'fas fa-play',
+                    title: 'Watch & Learn',
+                    description: 'Start with explanation and demonstration'
+                },
+                {
+                    icon: 'fas fa-code',
+                    title: 'Code Along',
+                    description: 'Write code step-by-step with guidance'
+                },
+                {
+                    icon: 'fas fa-question-circle',
+                    title: 'Quiz Time',
+                    description: 'Test your understanding with interactive quizzes'
+                },
+                {
+                    icon: 'fas fa-trophy',
+                    title: 'Final Challenge',
+                    description: 'Rebuild the entire template from scratch'
+                }
+            ];
+
+            return (
+                <div className="learning-flow">
+                    <h2>How the Learning Flow Works</h2>
+                    <div className="flow-grid">
+                        {steps.map((step, index) => (
+                            <div key={index} className="flow-step animate-fade-in">
+                                <div className="flow-icon">
+                                    <i className={step.icon}></i>
+                                </div>
+                                <h4 className="flow-title">{step.title}</h4>
+                                <p className="flow-description">{step.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // Main App Component
+        function App() {
+            const [modalOpen, setModalOpen] = useState(false);
+            const [selectedTemplate, setSelectedTemplate] = useState(null);
+
+            const handleStartTemplate = (template) => {
+                setSelectedTemplate(template);
+                setModalOpen(true);
+            };
+
+            const handleCloseModal = () => {
+                setModalOpen(false);
+                setSelectedTemplate(null);
+            };
+
+            return (
+                <div>
+                    <Header />
+                    <main className="main-content">
+                        <div className="container">
+                            <section className="hero">
+                                <h1 className="animate-fade-in">Welcome to CodeCraft</h1>
+                                <p className="animate-fade-in">
+                                    Master frontend development by building famous website templates step by step.
+                                    Learn HTML, CSS, and JavaScript through interactive lessons and live coding.
+                                </p>
+                            </section>
+
+                            <ProgressCards />
+
+                            <section>
+                                <h2 style={{ 
+                                    fontSize: '2rem', 
+                                    fontWeight: '700', 
+                                    marginBottom: '2rem',
+                                    color: 'var(--foreground)'
+                                }}>
+                                    Featured Templates
+                                </h2>
+                                <div className="template-grid">
+                                    {templates.map(template => (
+                                        <TemplateCard 
+                                            key={template.id} 
+                                            template={template}
+                                            onStart={handleStartTemplate}
+                                        />
+                                    ))}
+                                </div>
+                            </section>
+
+                            <LearningFlow />
+                        </div>
+                    </main>
+
+                    <CodeEditorModal 
+                        isOpen={modalOpen}
+                        onClose={handleCloseModal}
+                        template={selectedTemplate}
+                    />
+                </div>
+            );
+        }
+
+        // Render the app
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
